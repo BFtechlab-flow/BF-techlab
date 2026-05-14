@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BF Tech Lab — Websites & Automation</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #00BFFF;
+    --blue-dark: #0077CC;
+    --orange: #FFA500;
+    --white: #FFFFFF;
+    --glass: rgba(0,20,60,0.55);
+    --glass-border: rgba(0,191,255,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    color: var(--white);
+    background: #020c1b;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO IMAGE BLOCK ── */
+  .hero-image-block {
+    width: 100%;
+    height: 62vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-image-block img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .hero-image-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent, #020c1b);
+    pointer-events: none;
+  }
+
+  /* ── HERO TEXT BLOCK (sotto immagine) ── */
+  .hero-content {
+    background: #020c1b;
+    text-align: center;
+    padding: 100px 24px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,191,255,0.12);
+    border: 1px solid rgba(0,191,255,0.4);
+    color: var(--blue);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 0;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 0;
+    animation: fadeDown 0.9s 0.1s ease both;
+  }
+
+  .hero h1 span { color: var(--blue); }
+  .hero h1 em { color: var(--orange); font-style: normal; }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 300;
+    color: rgba(255,255,255,0.78);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.85;
+    animation: fadeDown 1s 0.2s ease both;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeDown 1s 0.3s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff;
+    box-shadow: 0 0 28px rgba(0,191,255,0.4);
+  }
+  .btn-primary:hover { box-shadow: 0 0 48px rgba(0,191,255,0.65); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid rgba(0,191,255,0.5);
+    color: var(--blue);
+  }
+  .btn-outline:hover { background: rgba(0,191,255,0.08); border-color: var(--blue); transform: translateY(-2px); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(2,12,27,0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,191,255,0.08);
+  }
+
+  .nav-logo {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-logo span { color: var(--blue); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 24px; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    color: var(--blue);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  .section-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 520px;
+    line-height: 1.7;
+    margin: 0 auto 64px;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+  .text-center { text-align: center; }
+
+  /* ── WHY US ── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .why-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 36px 28px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--orange));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .why-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,191,255,0.12); border-color: rgba(0,191,255,0.35); }
+  .why-card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 56px; height: 56px;
+    background: rgba(0,191,255,0.1);
+    border: 1px solid rgba(0,191,255,0.2);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+    font-size: 1.6rem;
+  }
+
+  .why-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .why-card p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.65;
+  }
+
+  /* ── SERVICES ── */
+  .services-bg {
+    background: linear-gradient(180deg, rgba(0,40,100,0.12) 0%, rgba(0,0,0,0) 100%);
+    position: relative;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  .service-card {
+    background: rgba(0,10,30,0.7);
+    border: 1px solid rgba(0,191,255,0.12);
+    border-radius: 20px;
+    padding: 40px 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card:hover {
+    border-color: rgba(0,191,255,0.4);
+    box-shadow: 0 0 60px rgba(0,191,255,0.08);
+    transform: translateY(-4px);
+  }
+
+  .service-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--orange);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+
+  .service-icon {
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .service-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .service-card p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.58);
+    line-height: 1.7;
+  }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+    align-items: start;
+  }
+
+  .price-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 40px 32px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+  }
+
+  .price-card.featured {
+    border-color: var(--blue);
+    box-shadow: 0 0 60px rgba(0,191,255,0.15), inset 0 0 40px rgba(0,191,255,0.04);
+    position: relative;
+  }
+
+  .price-card.featured::after {
+    content: '⭐ POPOLARE';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 5px 18px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .price-card:hover { transform: translateY(-5px); }
+
+  .price-tag {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin: 20px 0 6px;
+  }
+
+  .price-tag sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; }
+  .price-tag span { font-size: 1rem; color: rgba(255,255,255,0.4); font-weight: 400; }
+
+  .price-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .price-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.78);
+  }
+
+  .price-features li::before {
+    content: '✓';
+    color: var(--blue);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── PROCESS ── */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,191,255,0.3), var(--orange), rgba(0,191,255,0.3), transparent);
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 16px;
+    position: relative;
+  }
+
+  .step-num {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, rgba(0,191,255,0.15), rgba(0,119,204,0.15));
+    border: 1.5px solid rgba(0,191,255,0.35);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--blue);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .step p { font-size: 0.82rem; color: rgba(255,255,255,0.52); line-height: 1.6; }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 24px;
+    text-align: center;
+    padding: 60px 0;
+    border-top: 1px solid rgba(0,191,255,0.1);
+    border-bottom: 1px solid rgba(0,191,255,0.1);
+    margin: 60px 0;
+  }
+
+  .stat-val {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-val em { color: var(--orange); font-style: normal; }
+  .stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    background: linear-gradient(135deg, rgba(0,40,100,0.25), rgba(0,0,0,0.1));
+    border-top: 1px solid rgba(0,191,255,0.08);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .process-steps::before { display: none; }
+    .process-steps { gap: 40px; }
+  }
+
+  .contact-info h2 {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .contact-info p {
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-size: 0.95rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .contact-icon-wrap {
+    width: 48px; height: 48px;
+    background: rgba(0,191,255,0.1);
+    border: 1px solid rgba(0,191,255,0.2);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .contact-item a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+  .contact-item a:hover { color: var(--blue); }
+
+  .contact-item span {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+
+  .contact-form-box {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 40px 36px;
+    backdrop-filter: blur(10px);
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: rgba(0,10,30,0.6);
+    border: 1px solid rgba(0,191,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: rgba(0,191,255,0.5);
+    box-shadow: 0 0 20px rgba(0,191,255,0.08);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 100px; }
+
+  .form-group select option { background: #020c1b; }
+
+  .btn-full { width: 100%; justify-content: center; padding: 15px; font-size: 1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: rgba(0,0,0,0.6);
+    border-top: 1px solid rgba(0,191,255,0.08);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  footer p { font-size: 0.8rem; color: rgba(255,255,255,0.35); }
+  footer .footer-brand { font-weight: 900; color: rgba(255,255,255,0.7); }
+  footer .footer-brand span { color: var(--blue); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .floating { animation: float 4s ease-in-out infinite; }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Glow pulse on featured */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(0,191,255,0.12); }
+    50% { box-shadow: 0 0 80px rgba(0,191,255,0.25); }
+  }
+  .price-card.featured { animation: glowPulse 3s ease-in-out infinite; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #020c1b; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,191,255,0.3); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">BF <span>Tech</span> Lab</a>
+  <ul class="nav-links">
+    <li><a href="#servizi">Servizi</a></li>
+    <li><a href="#processo">Come lavoriamo</a></li>
+    <li><a href="#contatti" class="nav-cta btn">Richiedi preventivo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO IMAGE -->
+<div class="hero-image-block">
+  <img src="EB908F43-3667-4518-9A71-314ED3A6CC3D.PNG" alt="BF Tech Lab">
+</div>
+
+<!-- HERO TEXT -->
+<div class="hero-content">
+    <div class="hero-badge">⚡ Websites & Automation — Made in Italy</div>
+    <h1>Il tuo sito web<br><span>professionale</span> in<br><em>meno di 72 ore</em></h1>
+    <p>Realizziamo siti web di qualità premium a prezzi imbattibili. Consegniamo la tua anteprima in meno di 72 ore.</p>
+    <div class="cta-row">
+      <a href="#contatti" class="btn btn-primary">
+        🚀 Inizia ora — è gratis
+      </a>
+      <a href="#servizi" class="btn btn-outline">
+        Scopri i servizi
+      </a>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats-row reveal">
+    <div>
+      <div class="stat-val">72<em>h</em></div>
+      <div class="stat-label">ANTEPRIMA GARANTITA</div>
+    </div>
+    <div>
+      <div class="stat-val">-<em>60</em>%</div>
+      <div class="stat-label">VS AGENZIE TRADIZIONALI</div>
+    </div>
+    <div>
+      <div class="stat-val">100<em>%</em></div>
+      <div class="stat-label">PERSONALIZZATO</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- WHY US -->
+<section id="perche" style="padding-top: 40px;">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">// perché sceglierci</div>
+      <h2 class="section-title">I nostri punti di forza</h2>
+      <p class="section-sub">Non siamo la solita agenzia. Lavoriamo veloce, costano meno e il risultato parla da solo.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="card-icon">⚡</div>
+        <h3>Anteprima in 72 ore</h3>
+        <p>Ricevi la prima versione del tuo sito entro 3 giorni lavorativi. Velocità senza compromessi sulla qualità.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="card-icon">💰</div>
+        <h3>Prezzi competitivi</h3>
+        <p>Qualità da grande agenzia a prezzi accessibili. Nessun costo nascosto, nessuna sorpresa in fattura.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="card-icon">🎯</div>
+        <h3>Pensato per convertire</h3>
+        <p>Ogni sito è progettato strategicamente per trasformare i visitatori in clienti reali.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="card-icon">🔒</div>
+        <h3>Garanzia soddisfatti</h3>
+        <p>Non sei soddisfatto dell'anteprima? Rivediano tutto senza costi aggiuntivi finché non è perfetto.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="card-icon">📱</div>
+        <h3>100% Mobile-First</h3>
+        <p>Ogni sito è ottimizzato per smartphone, tablet e desktop. Google ti premierà nei risultati di ricerca.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="card-icon">🤖</div>
+        <h3>Automazione inclusa</h3>
+        <p>Integriamo form automatici e sistemi CRM per farti risparmiare tempo ogni giorno.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="servizi" class="services-bg">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">// cosa realizziamo</div>
+      <h2 class="section-title">I nostri servizi</h2>
+      <p class="section-sub">Dal sito vetrina all'automazione dei processi aziendali. Tutto in un unico partner.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <span class="service-icon">🌐</span>
+        <h3>Siti Vetrina</h3>
+        <p>La tua presenza online professionale. Landing page, siti aziendali e portfolio realizzati per fare colpo al primo sguardo.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">02</div>
+        <span class="service-icon">⚙️</span>
+        <h3>Automazione Processi</h3>
+        <p>Automatizziamo le attività ripetitive della tua azienda: email, CRM, prenotazioni, notifiche e molto altro.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">03</div>
+        <span class="service-icon">📈</span>
+        <h3>SEO & Visibilità</h3>
+        <p>Ottimizzazione per i motori di ricerca inclusa. Il tuo sito sarà trovato da chi cerca esattamente quello che offri.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">04</div>
+        <span class="service-icon">🔧</span>
+        <h3>Manutenzione & Supporto</h3>
+        <p>Il tuo sito sempre aggiornato e sicuro. Assistenza continua per aggiornamenti, modifiche e problemi tecnici.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="processo">
+  <div class="container">
+    <div class="text-center reveal">
+      <div class="section-label">// il nostro metodo</div>
+      <h2 class="section-title">Come lavoriamo</h2>
+      <p class="section-sub">Un processo semplice, trasparente e velocissimo. Dal primo contatto al sito online in tempo record.</p>
+    </div>
+    <div class="process-steps reveal" style="margin-top: 80px;">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Briefing gratuito</h4>
+        <p>Ci racconti il tuo business e le tue esigenze. Zero costi, zero impegni.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Preventivo su misura</h4>
+        <p>Analizziamo le tue esigenze e prepariamo una proposta personalizzata.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Anteprima in 72h</h4>
+        <p>La prima versione del tuo sito è già pronta da vedere e rivedere.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Go live! 🚀</h4>
+        <p>Approvato il design, mettiamo tutto online. Il tuo business decolla.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- CONTACT -->
+<section id="contatti" class="contact-section">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="section-label">// parlaci del tuo progetto</div>
+        <h2>Per maggiori informazioni<br><span style="color:var(--blue)">contattaci</span></h2>
+        <p>Siamo a tua disposizione per qualsiasi domanda, richiesta di preventivo o informazione sui nostri servizi. Rispondiamo entro poche ore.</p>
+        
+        <div class="contact-item">
+          <div class="contact-icon-wrap">📧</div>
+          <div>
+            <span>EMAIL</span>
+            <a href="mailto:bftechlabselling@gmail.com">bftechlabselling@gmail.com</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-wrap">📱</div>
+          <div>
+            <span>TELEFONO / WHATSAPP</span>
+            <a href="tel:+393756207447">+39 375 620 7447</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-wrap">⚡</div>
+          <div>
+            <span>TEMPI DI RISPOSTA</span>
+            <a href="#">Entro 72 ore</a>
+          </div>
+        </div>
+
+        <div style="margin-top:36px; padding: 20px 24px; background: rgba(0,191,255,0.06); border: 1px solid rgba(0,191,255,0.15); border-radius: 12px;">
+          <p style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin:0;">
+            💡 <strong style="color:rgba(255,255,255,0.8);">Consiglio:</strong> Scrivici su WhatsApp per la risposta più veloce. Il preventivo è sempre gratuito e senza impegno.
+          </p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="contact-form-box">
+          <div class="section-label" style="margin-bottom:20px;">// richiesta preventivo</div>
+          <div class="form-group">
+            <label>NOME E COGNOME</label>
+            <input type="text" placeholder="Mario Rossi">
+          </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" placeholder="mario@tuaazienda.it">
+          </div>
+          <div class="form-group">
+            <label>TIPOLOGIA SITO</label>
+            <select>
+              <option value="">Seleziona il tipo di sito...</option>
+              <option>Sito vetrina / Landing page</option>
+              <option>Blog aziendale</option>
+              <option>Automazione processi</option>
+              <option>Altro / Non so ancora</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>DESCRIVI IL TUO PROGETTO</label>
+            <textarea placeholder="Raccontaci la tua attività e cosa vorresti ottenere con il sito..."></textarea>
+          </div>
+          <a href="mailto:bftechlabselling@gmail.com?subject=Richiesta%20Preventivo%20BF%20Tech%20Lab" class="btn btn-primary btn-full">
+            🚀 Invia richiesta gratuita
+          </a>
+          <p style="text-align:center; margin-top:14px; font-size:0.75rem; color:rgba(255,255,255,0.3); font-family:'Space Mono',monospace;">Nessun spam. Nessun impegno. Solo risultati.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">BF <span>Tech</span> Lab</div>
+  <p>© 2026 BF Tech Lab — Websites & Automation. Tutti i diritti riservati.</p>
+  <p style="color:rgba(255,255,255,0.25);">📍 Italia</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Smooth nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Nav shrink on scroll
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.padding = window.scrollY > 60 ? '12px 48px' : '18px 48px';
+  });
+</script>
+</body>
+</html>
